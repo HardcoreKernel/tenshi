@@ -80,7 +80,6 @@
 
 &int_codec {
 	status = "okay";
-	qcom,model = "msm8917-sku5-snd-card";
 	qcom,msm-hs-micbias-type = "internal";
 	qcom,msm-mbhc-hphl-swh = <1>;
 	qcom,msm-mbhc-gnd-swh = <1>;
