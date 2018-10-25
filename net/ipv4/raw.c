@@ -345,6 +345,9 @@ static int raw_send_hdrinc(struct sock *sk, struct flowi4 *fl4,
 			       rt->dst.dev->mtu);
 		return -EMSGSIZE;
 	}
+	if (length < sizeof(struct iphdr))
+		return -EINVAL;
+
 	if (flags&MSG_PROBE)
 		goto out;
 
@@ -480,7 +483,7 @@ static int raw_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 	u8  tos;
 	int err;
 	struct ip_options_data opt_copy;
-        int hdrincl;
+	int hdrincl;
 
 	err = -EMSGSIZE;
 	if (len > 0xFFFF)
@@ -490,7 +493,6 @@ static int raw_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 	 * but READ_ONCE() doesn't work with bit fields
 	 */
 	hdrincl = inet->hdrincl;
-
 	/*
 	 *	Check the flags.
 	 */
@@ -587,9 +589,8 @@ static int raw_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 			   RT_SCOPE_UNIVERSE,
 			   hdrincl ? IPPROTO_RAW : sk->sk_protocol,
 			   inet_sk_flowi_flags(sk) |
-			    (hdrincl ? FLOWI_FLAG_KNOWN_NH : 0),
-			   daddr, saddr, 0, 0,
-			   sock_i_uid(sk));
+                            (hdrincl ? FLOWI_FLAG_KNOWN_NH : 0),
+			   daddr, saddr, 0, 0, sock_i_uid(sk));
 
 	if (!hdrincl) {
 		err = raw_probe_proto_opt(&fl4, msg);
