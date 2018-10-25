@@ -942,14 +942,6 @@ CSID_TG:
 
 	pr_err("%s probe succeeded", slave_info->sensor_name);
 
-	if (slave_info->camera_id == 0)
-	{
-		main_camera_info = slave_info->sensor_name;
-	}
-	if (slave_info->camera_id == 2)
-	{
-		sub_camera_info = slave_info->sensor_name;
-	}
 	/*
 	 * Update the subdevice id of flash-src based on availability in kernel.
 	 */
